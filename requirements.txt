@@ -7,3 +7,4 @@ hachoir
 aiofiles
 aiohttp
 ffmpeg
+flask>=2.0.0
