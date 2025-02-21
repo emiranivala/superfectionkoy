@@ -190,15 +190,13 @@ async def get_msg(userbot, sender, edit_id, msg_link, edit):
                 for i, chunk in enumerate(chunk_files, start=1):
                     chunk_caption = f"{caption}\n\nPart {i} of {total_chunks}"
                     try:
-                        chunk_msg = await app.send_document(
+                        await app.send_document(
                             chat_id=data.get("chat_id") or sender,
                             document=chunk,
                             caption=chunk_caption,
                             progress=progress_bar,
                             progress_args=("UPLOADING", edit, time.time())
                         )
-                        # Optional: copy to log group if applicable
-                        await chunk_msg.copy(LOG_GROUP)
                     except Exception as e:
                         await app.edit_message_text(sender, edit_id, f"Error uploading chunk {i}: {str(e)}")
                     if os.path.exists(chunk):
