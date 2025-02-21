@@ -7,7 +7,6 @@ from pyrogram.enums import MessageMediaType
 from Restriction.core.func import progress_bar
 from Restriction.core.mongo import settingsdb as db
 
-
 # ----------------------- Download Thumbnail with aiohttp -----------------------#
 async def download_thumbnail(url):
     async with aiohttp.ClientSession() as session:
@@ -19,11 +18,9 @@ async def download_thumbnail(url):
                 return filename
     return None
 
-
 # ----------------------- Utility Functions -----------------------#
 def replace_text(original_text, replace_txt, to_replace):
     return original_text.replace(replace_txt, to_replace)
-
 
 def remove_elements(words, cap):
     lol = cap
@@ -31,11 +28,9 @@ def remove_elements(words, cap):
         lol = lol.replace(i, '')
     return lol
 
-
 def clean_string(input_string):
     cleaned_string = re.sub(r'[@,/]', '', input_string)
     return cleaned_string
-
 
 # ----------------------- Docs Uploader -----------------------#
 async def docs_uploader(chat_id, file, caption, thumb, edit):
@@ -50,7 +45,6 @@ async def docs_uploader(chat_id, file, caption, thumb, edit):
         )
     except Exception as e:
         print(f"Error sending document: {e}")
-
 
 # ----------------------- Video Uploader -----------------------#
 async def video_uploader(chat_id, video, caption, height, width, duration, thumb, edit):
@@ -69,7 +63,6 @@ async def video_uploader(chat_id, video, caption, height, width, duration, thumb
         )
     except Exception as e:
         print(f"Error Sending Video: {e}")
-
 
 # ----------------------- Thumb and Caption Generator -----------------------#
 async def thumb_caption(userbot, user_id, msg, file):
@@ -97,7 +90,6 @@ async def thumb_caption(userbot, user_id, msg, file):
 
     return thumb_path or None, caption
 
-
 # ----------------------- Parallel Media Download -----------------------#
 async def parallel_download_media(userbot, media_list, edit):
     tasks = [
@@ -112,6 +104,36 @@ async def parallel_download_media(userbot, media_list, edit):
     ]
     return await asyncio.gather(*tasks)
 
+# ----------------------- CHUNK SPLITTING FUNCTIONS -----------------------
+MAX_CHUNK_SIZE = 2000 * 1024**2  # ~2GB
+
+def split_file(file_path, chunk_size=MAX_CHUNK_SIZE):
+    chunk_files = []
+    chunk_number = 1
+    buffer_size = 64 * 1024  # 64KB
+    with open(file_path, "rb") as f:
+        while True:
+            bytes_written = 0
+            chunk_filename = f"{file_path}.part{chunk_number}"
+            with open(chunk_filename, "wb") as chunk_file:
+                while bytes_written < chunk_size:
+                    data = f.read(min(buffer_size, chunk_size - bytes_written))
+                    if not data:
+                        break
+                    chunk_file.write(data)
+                    bytes_written += len(data)
+            if bytes_written == 0:
+                break
+            chunk_files.append(chunk_filename)
+            chunk_number += 1
+    return chunk_files
+
+async def delete_after(message, delay=5):
+    await asyncio.sleep(delay)
+    try:
+        await message.delete()
+    except Exception:
+        pass
 
 # ----------------------- Main Function -----------------------#
 async def get_msg(userbot, sender, edit_id, msg_link, edit):
@@ -158,6 +180,34 @@ async def get_msg(userbot, sender, edit_id, msg_link, edit):
                 return
 
             thumb_path, caption = await thumb_caption(userbot, sender, msg, file)
+
+            # ----------- 2GB+ Chunk Splitting Feature -----------
+            file_size = os.path.getsize(file)
+            if file_size > 2 * 1024**3:
+                await edit.edit(f"Large file detected ({file_size / (1024**3):.2f} GB). Splitting into chunks...")
+                chunk_files = split_file(file)
+                total_chunks = len(chunk_files)
+                for i, chunk in enumerate(chunk_files, start=1):
+                    chunk_caption = f"{caption}\n\nPart {i} of {total_chunks}"
+                    try:
+                        chunk_msg = await app.send_document(
+                            chat_id=data.get("chat_id") or sender,
+                            document=chunk,
+                            caption=chunk_caption,
+                            progress=progress_bar,
+                            progress_args=("UPLOADING", edit, time.time())
+                        )
+                        # Optional: copy to log group if applicable
+                        await chunk_msg.copy(LOG_GROUP)
+                    except Exception as e:
+                        await app.edit_message_text(sender, edit_id, f"Error uploading chunk {i}: {str(e)}")
+                    if os.path.exists(chunk):
+                        os.remove(chunk)
+                if os.path.exists(file):
+                    os.remove(file)
+                await edit.delete()
+                return
+            # ----------- End Chunk Splitting Block ---------------------
 
             chat_id = data.get("chat_id") or sender
             if msg.media == MessageMediaType.VIDEO:
