@@ -9,7 +9,6 @@ from Restriction.core.mongo import settingsdb as db
 
 
 # ----------------------- Download Thumbnail with aiohttp -----------------------#
-
 async def download_thumbnail(url):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
@@ -22,7 +21,6 @@ async def download_thumbnail(url):
 
 
 # ----------------------- Utility Functions -----------------------#
-
 def replace_text(original_text, replace_txt, to_replace):
     return original_text.replace(replace_txt, to_replace)
 
@@ -40,7 +38,6 @@ def clean_string(input_string):
 
 
 # ----------------------- Docs Uploader -----------------------#
-
 async def docs_uploader(chat_id, file, caption, thumb, edit):
     try:
         await app.send_document(
@@ -56,7 +53,6 @@ async def docs_uploader(chat_id, file, caption, thumb, edit):
 
 
 # ----------------------- Video Uploader -----------------------#
-
 async def video_uploader(chat_id, video, caption, height, width, duration, thumb, edit):
     try:
         await app.send_video(
@@ -76,7 +72,6 @@ async def video_uploader(chat_id, video, caption, height, width, duration, thumb
 
 
 # ----------------------- Thumb and Caption Generator -----------------------#
-
 async def thumb_caption(userbot, user_id, msg, file):
     data = await db.get_data(user_id)
 
@@ -104,7 +99,6 @@ async def thumb_caption(userbot, user_id, msg, file):
 
 
 # ----------------------- Parallel Media Download -----------------------#
-
 async def parallel_download_media(userbot, media_list, edit):
     tasks = [
         asyncio.create_task(
@@ -120,7 +114,6 @@ async def parallel_download_media(userbot, media_list, edit):
 
 
 # ----------------------- Main Function -----------------------#
-
 async def get_msg(userbot, sender, edit_id, msg_link, edit):
     if "?single" in msg_link:
         msg_link = msg_link.split("?single")[0]
@@ -148,8 +141,10 @@ async def get_msg(userbot, sender, edit_id, msg_link, edit):
                 if msg.text:
                     chat_id = data.get("chat_id") or sender
                     await app.send_message(chat_id, msg.text.markdown)
-                    await edit.delete()
-                    return
+                await edit.edit(".")
+                await asyncio.sleep(5)
+                await edit.delete()
+                return
 
             # Handle media messages
             await edit.edit("Downloading Media...")
@@ -157,7 +152,9 @@ async def get_msg(userbot, sender, edit_id, msg_link, edit):
             file = files[0] if files else None
 
             if not file:
-                await app.edit_message_text(sender, edit_id, "Failed to download media.")
+                dot_msg = await app.edit_message_text(sender, edit_id, ".")
+                await asyncio.sleep(5)
+                await dot_msg.delete()
                 return
 
             thumb_path, caption = await thumb_caption(userbot, sender, msg, file)
@@ -182,8 +179,9 @@ async def get_msg(userbot, sender, edit_id, msg_link, edit):
             await app.edit_message_text(sender, edit_id, "Have you joined the channel?")
             return
         except Exception as e:
-            await app.edit_message_text(sender, edit_id, f"**Error**: {str(e)}")
-
-
-
-
+            if "doesn't contain any downloadable media" in str(e):
+                dot_msg = await app.edit_message_text(sender, edit_id, ".")
+                await asyncio.sleep(5)
+                await dot_msg.delete()
+            else:
+                await app.edit_message_text(sender, edit_id, f"**Error**: {str(e)}")
