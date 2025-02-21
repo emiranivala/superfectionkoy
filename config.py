@@ -1,13 +1,13 @@
 from os import getenv
 
 
-API_ID = int(getenv("API_ID", "26850449"))
-API_HASH = getenv("API_HASH", "72a730c380e68095a8549ad7341b0608")
+API_ID = int(getenv("API_ID", "24210243"))
+API_HASH = getenv("API_HASH", "509031fb3790b968e489f71d591ebce5")
 BOT_TOKEN = getenv("BOT_TOKEN", "")
-OWNER_ID = list(map(int, getenv("OWNER_ID", "7091230649 6107581019").split()))
+OWNER_ID = list(map(int, getenv("OWNER_ID", "922270982").split()))
 MONGO_DB = getenv("MONGO_DB", "")
 
-CHANNEL_ID = int(getenv("CHANNEL_ID", ""))
-PREMIUM_LOGS = int(getenv("PREMIUM_LOGS", ""))
+CHANNEL_ID = int(getenv("CHANNEL_ID", "-1002294535138"))
+PREMIUM_LOGS = int(getenv("PREMIUM_LOGS", "-1002458919549"))
 
 
