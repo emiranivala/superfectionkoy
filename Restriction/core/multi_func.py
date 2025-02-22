@@ -9,10 +9,9 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
 api_keys = {
-    "https://modijiurl.com/api?": "e2500c935828f01bba4aec0115e1ae3122b9b399",
-    "https://kingurl.in/api?": "818290dbdf8330715f3537ccdaddd064c5dc5530",
-    "https://instantearn.in/api?": "f4c64eeefa209989122483005f51ef94ce491107",
-    "https://indianshortner.com/api?": "277be95035bcd028981d5200ee18c5dad6728fbb", 
+    "https://modijiurl.com/api?": "af1e4b123035d25cfdec72c5378a5d91aac11207",
+    "https://inshorturl.com/api?": "910fadcec0df945f8aa803869b497add2e9aa0ea",
+    "https://api.gplinks.com/api?": "3b2f7db4f2b84c96ee555458f7b92bee22e31e25", 
 }
 
 
