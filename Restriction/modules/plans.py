@@ -24,7 +24,7 @@ async def remove_premium(client, message):
             await message.reply_text("ᴜꜱᴇʀ ʀᴇᴍᴏᴠᴇᴅ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ!")
             
             keyboard = InlineKeyboardMarkup(
-                [[InlineKeyboardButton("Contact ☎️", user_id=int("6107581019"))]]
+                [[InlineKeyboardButton("Contact ☎️", user_id=int("7354339460"))]]
             )
             
             await client.send_message(
