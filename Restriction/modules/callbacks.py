@@ -281,7 +281,7 @@ async def handle_callback(_, query):
         elif query.data == "buy_coins":
             button = InlineKeyboardMarkup(
                 [
-                    [InlineKeyboardButton("Contact ☎️", url="https://t.me/She_who_remain)],
+                    [InlineKeyboardButton("Contact ☎️", url="tg://user?id=7354339460")],
                     [InlineKeyboardButton("Back", callback_data="shop_")]
                 ]
             )
