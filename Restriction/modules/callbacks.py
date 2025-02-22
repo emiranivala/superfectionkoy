@@ -25,8 +25,8 @@ buttons = InlineKeyboardMarkup(
 
 back_button  = InlineKeyboardMarkup([
 	       [
-                    InlineKeyboardButton("ɪɴsᴛʀᴜᴄᴛɪᴏɴs", url="https://t.me/FeaturesDB/4"), 
-	            InlineKeyboardButton("ғᴇᴀᴛᴜʀᴇs", url="https://t.me/FeaturesDB/3"),    
+                    InlineKeyboardButton("ɪɴsᴛʀᴜᴄᴛɪᴏɴs", url="https://t.me/Features_DB/5"), 
+	            InlineKeyboardButton("ғᴇᴀᴛᴜʀᴇs", url="https://t.me/Features_DB/4"),    
                ],[
                     InlineKeyboardButton("ʙᴀᴄᴋ", callback_data="home_"),                    
                ]])
@@ -281,7 +281,7 @@ async def handle_callback(_, query):
         elif query.data == "buy_coins":
             button = InlineKeyboardMarkup(
                 [
-                    [InlineKeyboardButton("Contact ☎️", user_id=int("6107581019"))],
+                    [InlineKeyboardButton("Contact ☎️", user_id=int("7354339460"))],
                     [InlineKeyboardButton("Back", callback_data="shop_")]
                 ]
             )
@@ -351,7 +351,7 @@ Click the provided button to purchase a premium plan according to your selected 
             msg = await customer_users(user_id, name)
             reply_markup = InlineKeyboardMarkup(
                 [
-                    [InlineKeyboardButton("💲 Business", url="https://t.me/DevsHuBChannel/178")],
+                    [InlineKeyboardButton("💲 Business", url="https://t.me/She_who_remain")],
                     [InlineKeyboardButton("Back", callback_data="info_")]
                 ]
             )
