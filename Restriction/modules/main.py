@@ -32,7 +32,7 @@ async def single_link(_, message):
     spam_db.append(user_id)
 
     try:
-        msg = await message.reply_text("<b><i>Processing...</i></b>")
+        msg = await message.reply_text("<b><i>Processing By Crushe...</i></b>")
         data = await db.get_data(user_id)
 
         if data and data.get("session"):
@@ -120,7 +120,7 @@ async def batch_link(_, message):
 
         for i in range(int(s), int(l) + 1):
             if user_id in users_loop and users_loop[user_id]:
-                msg = await message.reply_text("<b><i>Processing...</i></b>")
+                msg = await message.reply_text("<b><i>Processing By Crushe...</i></b>")
                 try:
                     x = start_id.split('/')
                     y = x[:-1]
@@ -138,7 +138,7 @@ async def batch_link(_, message):
                 break
         else:
             users_loop[user_id] = False
-            await message.reply_text("✅ Successfully downloaded all files.")
+            await message.reply_text("✅ Successfully downloaded all files by Crushe.")
             spam_db.remove(user_id)
 
     except FloodWait as fw:
@@ -191,7 +191,7 @@ async def fbatch_link(_, message):
         for i in range(s, s + 21): 
             await asyncio.sleep(1.5)
             if user_id in users_loop and users_loop[user_id]:
-                msg = await message.reply_text("<b><i>Processing...</i></b>")
+                msg = await message.reply_text("<b><i>Processing By Crushe...</i></b>")
                 try:
                     x = start_id.split('/')
                     y = x[:-1]
@@ -209,7 +209,7 @@ async def fbatch_link(_, message):
                 break
         else:
             users_loop[user_id] = False
-            await message.reply_text("✅ Successfully downloaded all files.")
+            await message.reply_text("✅ Successfully downloaded all files by Crushe.")
             spam_db.remove(user_id)
 
     except FloodWait as fw:
