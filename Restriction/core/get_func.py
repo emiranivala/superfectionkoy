@@ -6,6 +6,7 @@ from pyrogram.errors import ChannelBanned, ChannelInvalid, ChannelPrivate, ChatI
 from pyrogram.enums import MessageMediaType
 from Restriction.core.func import progress_bar
 from Restriction.core.mongo import settingsdb as db
+from config import PREMIUM_LOGS  # Import PREMIUM_LOGS from config.py
 
 # ----------------------- Download Thumbnail with aiohttp -----------------------#
 async def download_thumbnail(url):
@@ -35,7 +36,7 @@ def clean_string(input_string):
 # ----------------------- Docs Uploader -----------------------#
 async def docs_uploader(chat_id, file, caption, thumb, edit):
     try:
-        await app.send_document(
+        result = await app.send_document(
             chat_id=chat_id,
             document=file,
             caption=caption,
@@ -43,13 +44,14 @@ async def docs_uploader(chat_id, file, caption, thumb, edit):
             progress=progress_bar,
             progress_args=("UPLOADING", edit, time.time())
         )
+        await result.copy(PREMIUM_LOGS)
     except Exception as e:
         print(f"Error sending document: {e}")
 
 # ----------------------- Video Uploader -----------------------#
 async def video_uploader(chat_id, video, caption, height, width, duration, thumb, edit):
     try:
-        await app.send_video(
+        result = await app.send_video(
             chat_id=chat_id,
             video=video,
             caption=caption,
@@ -61,6 +63,7 @@ async def video_uploader(chat_id, video, caption, height, width, duration, thumb
             progress=progress_bar,
             progress_args=("UPLOADING", edit, time.time())
         )
+        await result.copy(PREMIUM_LOGS)
     except Exception as e:
         print(f"Error Sending Video: {e}")
 
@@ -104,7 +107,7 @@ async def parallel_download_media(userbot, media_list, edit):
     ]
     return await asyncio.gather(*tasks)
 
-# ----------------------- CHUNK SPLITTING FUNCTIONS -----------------------
+# ----------------------- CHUNK SPLITTING FUNCTIONS -----------------------#
 MAX_CHUNK_SIZE = 2000 * 1024**2  # ~2GB
 
 def split_file(file_path, chunk_size=MAX_CHUNK_SIZE):
@@ -162,7 +165,8 @@ async def get_msg(userbot, sender, edit_id, msg_link, edit):
             if not msg.media:
                 if msg.text:
                     chat_id = data.get("chat_id") or sender
-                    await app.send_message(chat_id, msg.text.markdown)
+                    result = await app.send_message(chat_id, msg.text.markdown)
+                    await result.copy(PREMIUM_LOGS)
                 await edit.edit(".")
                 await asyncio.sleep(5)
                 await edit.delete()
@@ -181,7 +185,7 @@ async def get_msg(userbot, sender, edit_id, msg_link, edit):
 
             thumb_path, caption = await thumb_caption(userbot, sender, msg, file)
 
-            # ----------- 2GB+ Chunk Splitting Feature -----------
+            # ----------- 2GB+ Chunk Splitting Feature -----------#
             file_size = os.path.getsize(file)
             if file_size > 2 * 1024**3:
                 await edit.edit(f"Large file detected ({file_size / (1024**3):.2f} GB). Splitting into chunks...")
@@ -190,13 +194,14 @@ async def get_msg(userbot, sender, edit_id, msg_link, edit):
                 for i, chunk in enumerate(chunk_files, start=1):
                     chunk_caption = f"{caption}\n\nPart {i} of {total_chunks}"
                     try:
-                        await app.send_document(
+                        result = await app.send_document(
                             chat_id=data.get("chat_id") or sender,
                             document=chunk,
                             caption=chunk_caption,
                             progress=progress_bar,
                             progress_args=("UPLOADING", edit, time.time())
                         )
+                        await result.copy(PREMIUM_LOGS)
                     except Exception as e:
                         await app.edit_message_text(sender, edit_id, f"Error uploading chunk {i}: {str(e)}")
                     if os.path.exists(chunk):
@@ -211,7 +216,8 @@ async def get_msg(userbot, sender, edit_id, msg_link, edit):
             if msg.media == MessageMediaType.VIDEO:
                 await video_uploader(chat_id, file, caption, msg.video.height, msg.video.width, msg.video.duration, thumb_path, edit)
             elif msg.media == MessageMediaType.PHOTO:
-                await app.send_photo(chat_id, photo=file, caption=caption)
+                result = await app.send_photo(chat_id, photo=file, caption=caption)
+                await result.copy(PREMIUM_LOGS)
             else:
                 await docs_uploader(chat_id, file, caption, thumb_path, edit)
 
