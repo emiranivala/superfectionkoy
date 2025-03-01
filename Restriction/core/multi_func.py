@@ -9,8 +9,8 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
 api_keys = {
-    "https://modijiurl.com/api?": "af1e4b123035d25cfdec72c5378a5d91aac11207",
     "https://inshorturl.com/api?": "910fadcec0df945f8aa803869b497add2e9aa0ea",
+    "https://modijiurl.com/api?": "af1e4b123035d25cfdec72c5378a5d91aac11207",
     "https://api.gplinks.com/api?": "3b2f7db4f2b84c96ee555458f7b92bee22e31e25", 
 }
 
