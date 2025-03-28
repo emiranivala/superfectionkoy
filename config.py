@@ -10,6 +10,6 @@ MONGO_DB = getenv("MONGO_DB", "")
 CHANNEL_ID = int(getenv("CHANNEL_ID", "-1002304203111"))
 PREMIUM_LOGS = int(getenv("PREMIUM_LOGS", "-1002230414810"))
 
-KOYEB_URL = getenv("KOYEB_URL", "")
+KOYEB_URL = getenv("KOYEB_URL", "querulous-cordelia-intrepidnmw12-2579ee0e.koyeb.app/")
 
 
