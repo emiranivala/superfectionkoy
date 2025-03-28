@@ -19,7 +19,7 @@ logging.basicConfig(
 from config import KOYEB_URL
 
 # URL of your Koyeb service
-url = KOYEB_URL  # Using the configured Koyeb service URL
+url = KOYEB_URL if KOYEB_URL.startswith('https://') else f'https://{KOYEB_URL}'  # Ensure URL has https:// scheme
 
 def keep_alive():
     while True:
