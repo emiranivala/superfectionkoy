@@ -6,7 +6,7 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return "Restriction Bot is Running!"
-mport requests
+import requests
 import time
 import logging
 
