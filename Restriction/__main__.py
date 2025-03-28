@@ -3,10 +3,8 @@ import importlib
 from pyrogram import idle
 from Restriction.modules import ALL_MODULES
 
- 
-# ----------------------------Bot-Start---------------------------- #
 
-loop = asyncio.get_event_loop()
+# ----------------------------Bot-Start---------------------------- #
 
 
 async def sumit_boot():
@@ -18,6 +16,6 @@ async def sumit_boot():
 
 
 if __name__ == "__main__":
-    loop.run_until_complete(sumit_boot())
+    asyncio.run(sumit_boot())
 
 # ------------------------------------------------------------------ #
